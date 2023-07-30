@@ -21,6 +21,10 @@ def build_swapped_char_map(browser) -> dict[str, str]:
     origin_char_list = parse_swapped_characters(Path(zhihu_font_file))
     test_image_file = generate_test_image(origin_char_list, Path(zhihu_font_file))
     target_char_list = apply_correction(ocr_swapped_char(test_image_file))
+
+    origin_char_list = origin_char_list.replace(" ", "")
+    target_char_list = target_char_list.replace(" ", "")
+
     sym_diff = set(origin_char_list).symmetric_difference(target_char_list)
     if len(sym_diff) > 0:
         logging.error(f"{sym_diff}, please update auto correction")

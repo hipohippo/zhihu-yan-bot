@@ -11,23 +11,24 @@ from zhihuYanBot.font_swap import build_swapped_char_map
 def extract_content(browser: WebDriver, url: str) -> Tuple[Optional[str], Optional[List[str]]]:
     if re.match("https://www.zhihu.com/question/[\d]+/answer/[\d]+", url):
         url_type = "answer"
+        url = url.split("?")[0]
         browser.get(url)
-
         ## h1 Question-title does not
         title = (
             browser.find_element(by=By.XPATH, value='//a[@role="pagedescription"]')
             .get_attribute("aria-label")[5:]
             .split("-")[0]
         )
-        content_xpath = r'//div[@class="Card AnswerCard css-0"]'
+        content_xpath = r'//div[@class="Card AnswerCard css-0"]'  ## xpath is url sensitive
         main_answer = browser.find_element(by=By.XPATH, value=content_xpath)
         soup = BeautifulSoup(main_answer.get_attribute("outerHTML"), features="lxml")
         html_content_group = clean_html_for_answer(soup)
 
     elif re.match("https://www.zhihu.com/market/paid_column/[\d]+/section/[\d]+", url):
         url_type = "paid_column"
+        url = url.split("?")[0]
         browser.get(url)
-        title = browser.find_element(by=By.XPATH, value=r'//h1[@class="ManuscriptTitle-root-gcmVk"]').text
+        title = browser.find_element(by=By.XPATH, value=r'//h1[@class="ManuscriptTitle-root-gcmVk"]').text ## xpath is url sensitive
         content_xpath = r'//div[@id="manuscript"]'
         ## reverse engineer char map. this line must be exectued here before building soup
         swap_char_map = build_swapped_char_map(browser)
