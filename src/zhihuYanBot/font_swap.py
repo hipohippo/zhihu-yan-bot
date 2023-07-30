@@ -12,6 +12,9 @@ from fontTools.ttLib import TTFont
 from pytesseract import Output
 from selenium.webdriver.common.by import By
 
+"""
+reverse engineer zhihu paid column dynamic font swapping mechanism
+"""
 
 def build_swapped_char_map(browser) -> dict[str, str]:
     zhihu_font_file = save_dynamic_font(browser, Path(tempfile.gettempdir()))

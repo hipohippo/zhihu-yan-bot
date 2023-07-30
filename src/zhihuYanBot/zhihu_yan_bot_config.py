@@ -20,6 +20,7 @@ class ZhihuYanBotConfig(BotConfig):
     telegraph token
 
     """
+
     def __init__(self, bot_config_dict: Union[dict, SectionProxy]):
         super().__init__(
             int(bot_config_dict["heart_beat_chat"]),
