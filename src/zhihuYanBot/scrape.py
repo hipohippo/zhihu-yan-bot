@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 from zhihuYanBot.font_swap import build_swapped_char_map
 
 
-def extract_content(browser: WebDriver, url: str) -> Tuple[Optional[str], Optional[List[str]]]:
+def extract_zhihu_content(browser: WebDriver, url: str) -> Tuple[Optional[str], Optional[List[str]]]:
     if re.match("https://www.zhihu.com/question/[\d]+/answer/[\d]+", url):
         url_type = "answer"
         url = url.split("?")[0]

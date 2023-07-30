@@ -6,7 +6,7 @@ from telegram import Update
 from telegram.ext import ContextTypes
 
 from hipo_telegram_bot_common.telegraph_publisher.publisher import publish_chunk
-from zhihuYanBot.scrape import extract_content
+from zhihuYanBot.scrape import extract_zhihu_content
 from zhihuYanBot.zhihu_yan_bot_config import ZhihuYanBotConfig
 
 
@@ -18,7 +18,7 @@ async def scrape_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     telegraph_urls = None
 
     try:
-        title, html_content_group = extract_content(bot_config.browser, zhihu_url)
+        title, html_content_group = extract_zhihu_content(bot_config.browser, zhihu_url)
         if not title:
             await update.message.reply_text("invalid url")
             return
