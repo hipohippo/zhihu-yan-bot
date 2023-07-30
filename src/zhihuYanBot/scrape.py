@@ -8,6 +8,13 @@ from selenium.webdriver.common.by import By
 from zhihuYanBot.font_swap import build_swapped_char_map
 
 
+def extract_protected_weibo_content(browser: WebDriver, url: str) -> Tuple[str, str]:
+    browser.get(url)
+    main_answer = browser.find_element(by=By.XPATH, value='//div[@class="weibo-text"]').text
+    author = browser.find_element(by=By.XPATH, value='//h3[@class="m-text-cut"]').text
+    return author, main_answer
+
+
 def extract_zhihu_content(browser: WebDriver, url: str) -> Tuple[Optional[str], Optional[List[str]]]:
     if re.match("https://www.zhihu.com/question/[\d]+/answer/[\d]+", url):
         url_type = "answer"
@@ -28,7 +35,9 @@ def extract_zhihu_content(browser: WebDriver, url: str) -> Tuple[Optional[str], 
         url_type = "paid_column"
         url = url.split("?")[0]
         browser.get(url)
-        title = browser.find_element(by=By.XPATH, value=r'//h1[@class="ManuscriptTitle-root-gcmVk"]').text ## xpath is url sensitive
+        title = browser.find_element(
+            by=By.XPATH, value=r'//h1[@class="ManuscriptTitle-root-gcmVk"]'
+        ).text  ## xpath is url sensitive
         content_xpath = r'//div[@id="manuscript"]'
         ## reverse engineer char map. this line must be exectued here before building soup
         swap_char_map = build_swapped_char_map(browser)
