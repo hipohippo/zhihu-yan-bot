@@ -1,3 +1,11 @@
+.gitignore
+.idea
+*.pyc
+*.ini
+*.log
+local_test.py
+bot_main_test.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
