@@ -44,11 +44,11 @@ def extract_zhihu_content(browser: WebDriver, url: str) -> Tuple[Optional[str], 
             by=By.XPATH, value=r'//h1[@class="ManuscriptTitle-root-gcmVk"]'
         ).text  ## xpath is url sensitive
         content_xpath = r'//div[@id="manuscript"]'
-        ## reverse engineer char map. swap must appear before getting main_answer
-        swap_char_map = build_swapped_char_map(browser, url_type)
         main_answer = browser.find_element(by=By.XPATH, value=content_xpath)
         soup = BeautifulSoup(main_answer.get_attribute("outerHTML"), features="lxml")
         html_content_group = clean_html_for_answer(soup)
+        ## reverse engineer char map. swap must appear after getting main_answer
+        swap_char_map = build_swapped_char_map(browser, url_type)
     else:
         return None, None
 

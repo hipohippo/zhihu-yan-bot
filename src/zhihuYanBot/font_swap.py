@@ -142,5 +142,5 @@ def ocr_swapped_char(test_image: Path) -> str:
 
 
 def apply_correction(target_list: str) -> str:
-    correction_map = {"友": "发", "入": "人"}
+    correction_map = {"友": "发", "入": "人", "尝":"学", "鸭":"的"}
     return "".join([correction_map.get(c, c) for c in target_list])
