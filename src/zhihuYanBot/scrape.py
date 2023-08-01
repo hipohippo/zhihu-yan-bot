@@ -16,6 +16,7 @@ def extract_protected_weibo_content(browser: WebDriver, url: str) -> Tuple[str, 
 
 
 def extract_zhihu_content(browser: WebDriver, url: str) -> Tuple[Optional[str], Optional[List[str]]]:
+    char_swap_required = False
     if re.match("https://www.zhihu.com/question/[\d]+/answer/[\d]+", url):
         url_type = "answer"
         url = url.split("?")[0]
@@ -30,8 +31,12 @@ def extract_zhihu_content(browser: WebDriver, url: str) -> Tuple[Optional[str], 
         main_answer = browser.find_element(by=By.XPATH, value=content_xpath)
         soup = BeautifulSoup(main_answer.get_attribute("outerHTML"), features="lxml")
         html_content_group = clean_html_for_answer(soup)
+        if soup.text.find("本内容版权为知乎及版权方所有，正在受版权保护中") >= 0:
+            char_swap_required = True
+            swap_char_map = build_swapped_char_map(browser, url_type)
 
     elif re.match("https://www.zhihu.com/market/paid_column/[\d]+/section/[\d]+", url):
+        char_swap_required = True
         url_type = "paid_column"
         url = url.split("?")[0]
         browser.get(url)
@@ -39,15 +44,15 @@ def extract_zhihu_content(browser: WebDriver, url: str) -> Tuple[Optional[str], 
             by=By.XPATH, value=r'//h1[@class="ManuscriptTitle-root-gcmVk"]'
         ).text  ## xpath is url sensitive
         content_xpath = r'//div[@id="manuscript"]'
-        ## reverse engineer char map. this line must be exectued here before building soup
-        swap_char_map = build_swapped_char_map(browser)
-
+        ## reverse engineer char map. swap must appear before getting main_answer
+        swap_char_map = build_swapped_char_map(browser, url_type)
+        main_answer = browser.find_element(by=By.XPATH, value=content_xpath)
+        soup = BeautifulSoup(main_answer.get_attribute("outerHTML"), features="lxml")
+        html_content_group = clean_html_for_answer(soup)
     else:
         return None, None
-    main_answer = browser.find_element(by=By.XPATH, value=content_xpath)
-    soup = BeautifulSoup(main_answer.get_attribute("outerHTML"), features="lxml")
-    html_content_group = clean_html_for_answer(soup)
-    if url_type == "paid_column":
+
+    if char_swap_required:
         html_content_group = [
             "".join([swap_char_map.get(c, c) for c in html_content]) for html_content in html_content_group
         ]

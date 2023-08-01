@@ -26,8 +26,12 @@ def build_bot_app(bot_config_dict) -> Application:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
+    logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO, encoding="utf-8")
     bot_config_file = sys.argv[1]
     bot_config_dict = parse_from_ini(bot_config_file)
     bot_app = build_bot_app(bot_config_dict)
     bot_app.run_polling()
+
+    """
+    TODO: emulate QR code login
+    """
