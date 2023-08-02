@@ -5,7 +5,7 @@ from typing import List
 
 from telegram import Update
 from telegram.ext import ContextTypes
-
+import traceback
 from hipo_telegram_bot_common.telegraph_publisher.publisher import publish_chunk
 from zhihuYanBot.scrape import extract_zhihu_content, extract_protected_weibo_content
 from zhihuYanBot.zhihu_yan_bot_config import ZhihuYanBotConfig
@@ -15,6 +15,7 @@ async def scrape_protected_weibo_handler(update: Update, context: ContextTypes.D
     bot_config: ZhihuYanBotConfig = context.bot_data["bot_config"]
     if (not update) or (not update.message) or (not update.message.reply_to_message):
         logging.error("invalid input")
+        return
 
     url = update.message.reply_to_message.text
     telegraph_url = None
@@ -38,6 +39,8 @@ async def scrape_zhihu_handler(update: Update, context: ContextTypes.DEFAULT_TYP
     bot_config: ZhihuYanBotConfig = context.bot_data["bot_config"]
     if (not update) or (not update.message) or (not update.message.reply_to_message):
         logging.error("invalid input")
+        await update.message.reply_html("empty message")
+
     url = update.message.reply_to_message.text
     telegraph_urls = None
     if not re.match(r"https://www.zhihu.com/.+", url):
@@ -53,7 +56,7 @@ async def scrape_zhihu_handler(update: Update, context: ContextTypes.DEFAULT_TYP
         # telegraph_url = publish_single(bot_config.telegraph_publisher, title, html_content)
         telegraph_urls: List[str] = publish_chunk(bot_config.telegraph_publisher, title, html_content_group)
     except Exception as e:
-        error_message = f"failed in chat {update.effective_chat.id}: {e}"
+        error_message = f"failed in chat {update.effective_chat.id}: {traceback.format_exc()}"
         logging.error(error_message)
         await context.bot.send_message(bot_config.error_notify_chat, text=error_message)
         await asyncio.sleep(5)

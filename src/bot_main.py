@@ -17,8 +17,8 @@ def build_bot_app(bot_config_dict) -> Application:
     bot_config = ZhihuYanBotConfig(bot_config_dict)
     bot_app = (
         BotBuilder(bot_config_dict["bot_token"], bot_config)
-        .add_handlers([MessageHandler(filters.Regex("/zhihu"), scrape_zhihu_handler),])
-        .add_handlers([MessageHandler(filters.Regex("/weibo"), scrape_protected_weibo_handler),])
+        .add_handlers([MessageHandler(filters.Regex("^/zhihu"), scrape_zhihu_handler),])
+        .add_handlers([MessageHandler(filters.Regex("^/weibo"), scrape_protected_weibo_handler),])
         .add_repeating_jobs([(heart_beat_job, {"first": 5, "interval": 3 * 3600})])
         .build()
     )
