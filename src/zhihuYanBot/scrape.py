@@ -34,6 +34,10 @@ def extract_zhihu_content(browser: WebDriver, url: str) -> Tuple[Optional[str], 
         if soup.text.find("本内容版权为知乎及版权方所有，正在受版权保护中") >= 0:
             char_swap_required = True
             swap_char_map = build_swapped_char_map(browser, url_type)
+        if soup.text.find("会员特权") >= 0 and soup.text.find("已解锁价值") >= 0:
+            char_swap_required = True
+            swap_char_map = build_swapped_char_map(browser, url_type)
+
 
     elif re.match("https://www.zhihu.com/market/paid_column/[\d]+/section/[\d]+", url):
         char_swap_required = True
