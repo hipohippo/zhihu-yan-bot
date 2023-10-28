@@ -9,8 +9,8 @@ from telegram.ext import Application, MessageHandler, filters
 from hipo_telegram_bot_common.bot_config.bot_config_parser import parse_from_ini
 from hipo_telegram_bot_common.bot_factory import BotBuilder
 from hipo_telegram_bot_common.common_handler import heart_beat_job
-from zhihuYanBot.bot_handler import scrape_zhihu_handler, scrape_protected_weibo_handler
-from zhihuYanBot.zhihu_yan_bot_config import ZhihuYanBotConfig
+from zhihu_yan_bot.bot_handler import scrape_zhihu_handler, scrape_protected_weibo_handler
+from zhihu_yan_bot.zhihu_yan_bot_config import ZhihuYanBotConfig
 
 
 def build_bot_app(bot_config_dict) -> Application:

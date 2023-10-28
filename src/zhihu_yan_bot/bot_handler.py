@@ -7,8 +7,8 @@ from telegram import Update
 from telegram.ext import ContextTypes
 import traceback
 from hipo_telegram_bot_common.telegraph_publisher.publisher import publish_chunk
-from zhihuYanBot.scrape import extract_zhihu_content, extract_protected_weibo_content
-from zhihuYanBot.zhihu_yan_bot_config import ZhihuYanBotConfig
+from zhihu_yan_bot.scrape import extract_zhihu_content, extract_protected_weibo_content
+from zhihu_yan_bot.zhihu_yan_bot_config import ZhihuYanBotConfig
 
 
 async def scrape_protected_weibo_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):

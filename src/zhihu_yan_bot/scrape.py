@@ -1,3 +1,4 @@
+import logging
 import re
 from typing import Tuple, Optional, List
 
@@ -5,7 +6,7 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 
-from zhihuYanBot.font_swap import build_swapped_char_map
+from zhihu_yan_bot.font_swap import build_swapped_char_map
 
 
 def extract_protected_weibo_content(browser: WebDriver, url: str) -> Tuple[str, str]:
@@ -31,17 +32,17 @@ def extract_zhihu_content(browser: WebDriver, url: str) -> Tuple[Optional[str], 
         main_answer = browser.find_element(by=By.XPATH, value=content_xpath)
         soup = BeautifulSoup(main_answer.get_attribute("outerHTML"), features="lxml")
         html_content_group = clean_html_for_answer(soup)
-        if soup.text.find("本内容版权为知乎及版权方所有，正在受版权保护中") >= 0:
+        if (soup.text.find("本内容版权为知乎及版权方所有") >= 0) or (soup.text.find("会员特权") >= 0 and soup.text.find("已解锁价值") >= 0):
+            logging.info("付费回答")
             char_swap_required = True
             swap_char_map = build_swapped_char_map(browser, url_type)
-        if soup.text.find("会员特权") >= 0 and soup.text.find("已解锁价值") >= 0:
-            char_swap_required = True
-            swap_char_map = build_swapped_char_map(browser, url_type)
-
+        else:
+            logging.info("非付费回答" + soup.text)
 
     elif re.match("https://www.zhihu.com/market/paid_column/[\d]+/section/[\d]+", url):
         char_swap_required = True
         url_type = "paid_column"
+        logging.info("付费专栏")
         url = url.split("?")[0]
         browser.get(url)
         title = browser.find_element(

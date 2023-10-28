@@ -29,6 +29,6 @@ class ZhihuYanBotConfig(BotConfig):
             bot_name="Zhihu Yan Bot",
         )
         self.browser = get_chrome_driver(
-            bot_config_dict, load_extension=False, given_port=int(bot_config_dict["given_port"])
+            bot_config_dict, load_extension=False, given_port=int(bot_config_dict["designated_port"])
         )
         self.telegraph_publisher = Telegraph(access_token=bot_config_dict["telegraph_token"])

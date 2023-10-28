@@ -29,6 +29,9 @@ def build_swapped_char_map(browser, flavor: str) -> dict[str, str]:
     elif flavor == "answer":
         ## analyze xml directly
         zhihu_font_file = save_dyanmic_font_brutal_force(browser, Path(tempfile.gettempdir()))
+        #origin_char_list = parse_swapped_characters(Path(zhihu_font_file))
+        #test_image_file = generate_test_image(origin_char_list, Path(zhihu_font_file))
+        #target_char_list = apply_correction(ocr_swapped_char(test_image_file))
         origin_char_list, target_char_list = analyze_map_from_xml(zhihu_font_file)
     else:
         raise ValueError("unsupported flavor")
@@ -106,7 +109,7 @@ def analyze_map_from_xml(font_file: Path) -> Tuple[str, str]:
     char_map = root.findall(".//cmap_format_4")[0]
     origin_list = [chr(int(element.get("code")[2:], 16)) for element in char_map.findall("map")]
     target_list = [chr(int(element.get("name")[3:], 16)) for element in char_map.findall("map")]
-    radical_to_regular = pd.read_csv(Path(__file__) / "../regular_radical_map.csv")
+    radical_to_regular = pd.read_csv(Path(__file__).parent / "regular_radical_map.csv")
     radical_to_regular["radical"] = [chr(int(c[2:], 16)) for c in radical_to_regular["radical"]]
     radical_to_regular["regular"] = [chr(int(c[2:], 16)) for c in radical_to_regular["regular"]]
     radical_to_regular_map = {o: d for o, d in zip(radical_to_regular["radical"], radical_to_regular["regular"])}
