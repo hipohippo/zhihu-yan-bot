@@ -44,10 +44,10 @@ def build_swapped_char_map(browser, flavor: str) -> dict[str, str]:
         print(f"original: {origin_char_list}")
         print(f"target:{target_char_list}")
         print(f"sym_diff: {sym_diff}, please update auto correction")
-        logging.error(f"{sym_diff}, please update auto correction")
+        logging.getLogger(__name__).error(f"{sym_diff}, please update auto correction")
         raise RuntimeError(f"{sym_diff}, please update auto correction")
     swapped_char_map = {origin: dest for (origin, dest) in zip(origin_char_list, target_char_list)}
-    logging.info(f"map built: {swapped_char_map}")
+    logging.getLogger(__name__).info(f"map built: {swapped_char_map}")
     return swapped_char_map
 
 
@@ -66,7 +66,7 @@ def save_dyanmic_font_brutal_force(browser, temp_path: Path) -> Path:
     zhihu_font_file = temp_path / f'zhihufont_{pd.Timestamp.now().strftime("%Y%m%d_%H%M")}.ttf'
     with open(zhihu_font_file, "wb") as f:
         f.write(font_decoded)
-    logging.info(f"zhihu font downloaded to {zhihu_font_file}")
+    logging.getLogger(__name__).info(f"zhihu font downloaded to {zhihu_font_file}")
     return zhihu_font_file
 
 
@@ -83,7 +83,7 @@ def save_dynamic_font_by_xpath(browser, font_xpath: str, temp_path: Path) -> Pat
     zhihu_font_file = temp_path / f'zhihufont_{pd.Timestamp.now().strftime("%Y%m%d_%H%M")}.ttf'
     with open(zhihu_font_file, "wb") as f:
         f.write(font_decoded)
-    logging.info(f"zhihu font downloaded to {zhihu_font_file}")
+    logging.getLogger(__name__).info(f"zhihu font downloaded to {zhihu_font_file}")
     return zhihu_font_file
 
 
@@ -130,7 +130,7 @@ def generate_test_image(char_list: str, swapped_font_file: Path) -> Path:
         draw.text((idx * font_size, 0), char, font=zhihu_img_font)
     test_image_file = swapped_font_file.parent / f'{swapped_font_file.name.split(".")[0]}.jpg'
     img.save(str(test_image_file.resolve()))
-    logging.info(f"test imaged file generated: {test_image_file}")
+    logging.getLogger(__name__).info(f"test imaged file generated: {test_image_file}")
     return test_image_file
 
 

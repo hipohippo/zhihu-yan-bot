@@ -14,7 +14,7 @@ from zhihu_yan_bot.zhihu_yan_bot_config import ZhihuYanBotConfig
 async def scrape_protected_weibo_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     bot_config: ZhihuYanBotConfig = context.bot_data["bot_config"]
     if (not update) or (not update.message) or (not update.message.reply_to_message):
-        logging.error("invalid input")
+        logging.getLogger(__name__).error("invalid input")
         return
 
     url = update.message.reply_to_message.text
@@ -29,7 +29,7 @@ async def scrape_protected_weibo_handler(update: Update, context: ContextTypes.D
         await update.message.reply_html(f"from {author}\n {html_content}")
     except Exception as e:
         error_message = f"failed in chat {update.effective_chat.id}: {e}"
-        logging.error(error_message)
+        logging.getLogger(__name__).error(error_message)
         await context.bot.send_message(bot_config.error_notify_chat, text=error_message)
         await asyncio.sleep(5)
     return telegraph_url
@@ -38,7 +38,7 @@ async def scrape_protected_weibo_handler(update: Update, context: ContextTypes.D
 async def scrape_zhihu_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     bot_config: ZhihuYanBotConfig = context.bot_data["bot_config"]
     if (not update) or (not update.message) or (not update.message.reply_to_message):
-        logging.error("invalid input")
+        logging.getLogger(__name__).error("invalid input")
         await update.message.reply_html("empty message")
 
     url = update.message.reply_to_message.text
@@ -52,12 +52,12 @@ async def scrape_zhihu_handler(update: Update, context: ContextTypes.DEFAULT_TYP
         if not title:
             await update.message.reply_text("unsupported url")
             return
-        logging.info(sum([len(s) for s in html_content_group]))
+        logging.getLogger(__name__).info(sum([len(s) for s in html_content_group]))
         # telegraph_url = publish_single(bot_config.telegraph_publisher, title, html_content)
         telegraph_urls: List[str] = publish_chunk(bot_config.telegraph_publisher, title, html_content_group)
     except Exception as e:
         error_message = f"failed in chat {update.effective_chat.id}: {traceback.format_exc()}"
-        logging.error(error_message)
+        logging.getLogger(__name__).error(error_message)
         await context.bot.send_message(bot_config.error_notify_chat, text=error_message)
         await asyncio.sleep(5)
 
