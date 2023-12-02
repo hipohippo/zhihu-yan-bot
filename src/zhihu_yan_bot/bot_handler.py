@@ -44,7 +44,7 @@ async def scrape_zhihu_handler(update: Update, context: ContextTypes.DEFAULT_TYP
     url = update.message.reply_to_message.text
     telegraph_urls = None
     if not re.match(r"https://www.zhihu.com/.+", url):
-        await update.message.reply_html("unsupported url")
+        await update.message.reply_html(f"unsupported url - {url}")
         return
 
     try:
