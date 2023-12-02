@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import Tuple, Optional, List
+from typing import Tuple, Optional, List, Dict
 
 from bs4 import BeautifulSoup
 from selenium.webdriver.chrome.webdriver import WebDriver
@@ -16,7 +16,7 @@ def extract_protected_weibo_content(browser: WebDriver, url: str) -> Tuple[str, 
     return author, main_answer
 
 
-def extract_zhihu_content(browser: WebDriver, url: str) -> Tuple[Optional[str], Optional[List[str]]]:
+def extract_zhihu_content(browser: WebDriver, url: str) -> Tuple[Optional[str], Optional[List[str]], Dict[str,str]]:
     char_swap_required = False
     if re.match("https://www.zhihu.com/question/[\d]+/answer/[\d]+", url):
         url_type = "answer"
@@ -62,7 +62,7 @@ def extract_zhihu_content(browser: WebDriver, url: str) -> Tuple[Optional[str], 
             "".join([swap_char_map.get(c, c) for c in html_content]) for html_content in html_content_group
         ]
 
-    return title, html_content_group
+    return title, html_content_group, swap_char_map
 
 
 def clean_html_for_answer(soup: BeautifulSoup) -> List[str]:

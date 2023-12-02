@@ -48,9 +48,9 @@ async def scrape_zhihu_handler(update: Update, context: ContextTypes.DEFAULT_TYP
         return
 
     try:
-        title, html_content_group = extract_zhihu_content(bot_config.browser, url)
+        title, html_content_group, swapped_char_map = extract_zhihu_content(bot_config.browser, url)
         if not title:
-            await update.message.reply_text("unsupported url")
+            await update.message.reply_text("unsupported url - failed to extract title")
             return
         logging.getLogger(__name__).info(sum([len(s) for s in html_content_group]))
         # telegraph_url = publish_single(bot_config.telegraph_publisher, title, html_content)

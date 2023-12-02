@@ -29,10 +29,11 @@ def build_swapped_char_map(browser, flavor: str) -> dict[str, str]:
     elif flavor == "answer":
         ## analyze xml directly
         zhihu_font_file = save_dyanmic_font_brutal_force(browser, Path(tempfile.gettempdir()))
-        #origin_char_list = parse_swapped_characters(Path(zhihu_font_file))
-        #test_image_file = generate_test_image(origin_char_list, Path(zhihu_font_file))
-        #target_char_list = apply_correction(ocr_swapped_char(test_image_file))
-        origin_char_list, target_char_list = analyze_map_from_xml(zhihu_font_file)
+        origin_char_list = parse_swapped_characters(Path(zhihu_font_file))
+        test_image_file = generate_test_image(origin_char_list, Path(zhihu_font_file))
+        target_char_list = apply_correction(ocr_swapped_char(test_image_file))
+        ## or analyze from xml
+        # origin_char_list, target_char_list = analyze_map_from_xml(zhihu_font_file)
     else:
         raise ValueError("unsupported flavor")
 
@@ -40,12 +41,17 @@ def build_swapped_char_map(browser, flavor: str) -> dict[str, str]:
     target_char_list = target_char_list.replace(" ", "")
 
     sym_diff = set(origin_char_list).symmetric_difference(target_char_list)
-    if len(sym_diff) > 0:
+    if len(sym_diff) > 2:
         print(f"original: {origin_char_list}")
         print(f"target:{target_char_list}")
         print(f"sym_diff: {sym_diff}, please update auto correction")
         logging.getLogger(__name__).error(f"{sym_diff}, please update auto correction")
         raise RuntimeError(f"{sym_diff}, please update auto correction")
+    elif len(sym_diff)==2:
+        logging.getLogger(__name__).info(f"{sym_diff}, apply auto correction by guess")
+        diff1 = list(set(origin_char_list).difference(set(target_char_list)))[0]
+        diff2 = list(set(target_char_list).difference(set(origin_char_list)))[0]
+        target_char_list.replace(diff2, diff1)
     swapped_char_map = {origin: dest for (origin, dest) in zip(origin_char_list, target_char_list)}
     logging.getLogger(__name__).info(f"map built: {swapped_char_map}")
     return swapped_char_map
